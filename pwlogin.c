@@ -143,6 +143,8 @@ void init_login() {
 }
 
 int main(int argc, char **argv) {
+    chdir(_TA_HOME);
+
     if (access(AUTH_HASH_FILE_PATH, R_OK) != 0) {
         // Allow passwordless login if no password is set
         // or unreadable.
