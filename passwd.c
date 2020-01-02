@@ -1,6 +1,6 @@
 //
 // Password authentication utilities for Termux
-// Copyright (C) 2018 Leonid Plyushch <leonid.plyushch@gmail.com>
+// Copyright (C) 2018-2020 Leonid Plyushch <leonid.plyushch@gmail.com>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

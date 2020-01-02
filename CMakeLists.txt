@@ -15,5 +15,9 @@ add_executable(passwd passwd.c)
 target_link_libraries(passwd termux-auth)
 install(TARGETS passwd DESTINATION bin)
 
+add_executable(pwlogin pwlogin.c)
+target_link_libraries(pwlogin termux-auth)
+install(TARGETS pwlogin DESTINATION bin)
+
 add_executable(testauth testauth.c)
 target_link_libraries(testauth termux-auth)
