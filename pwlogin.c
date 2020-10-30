@@ -25,9 +25,6 @@
 
 #include "termux-auth.h"
 
-#define _TA_HOME "/data/data/com.termux/files/home"
-#define _TA_PREFIX "/data/data/com.termux/files/usr"
-
 //
 // Login utility: prompt for password, print MOTD and launch
 // login shell. Primary useful only by some programs like
@@ -44,11 +41,11 @@ char *get_shell() {
     char *shell = NULL;
     struct stat st;
 
-    if (lstat(_TA_HOME "/.termux/shell", &st) == 0) {
+    if (lstat(TERMUX_HOME "/.termux/shell", &st) == 0) {
         if (S_ISLNK(st.st_mode)) {
             // If ~/.termux/shell points to executable.
             char link_target[PATH_MAX];
-            ssize_t len = readlink(_TA_HOME "/.termux/shell", link_target, sizeof(link_target) - 1);
+            ssize_t len = readlink(TERMUX_HOME "/.termux/shell", link_target, sizeof(link_target) - 1);
 
             if (len != -1) {
                 link_target[len] = '\0';
@@ -61,8 +58,8 @@ char *get_shell() {
             // If ~/.termux/shell is regular executable file.
             // Some Termux users may prefer to launch a custom program
             // instead of shell.
-            if (access(_TA_HOME "/.termux/shell", R_OK | X_OK) == 0) {
-                shell = _TA_HOME "/.termux/shell";
+            if (access(TERMUX_HOME "/.termux/shell", R_OK | X_OK) == 0) {
+                shell = TERMUX_HOME "/.termux/shell";
             }
         } else {
             // If ~/.termux/shell has unexpected file type.
@@ -73,8 +70,8 @@ char *get_shell() {
         // Using the default.
 
         char *default_shells[/* 2 */] = {
-            _TA_PREFIX "/bin/bash",
-            _TA_PREFIX "/bin/sh"
+            TERMUX_PREFIX "/bin/bash",
+            TERMUX_PREFIX "/bin/sh"
         };
 
         for (int i=0; i<2; i++) {
@@ -101,12 +98,12 @@ void prepare_termux_exec() {
     pid_t ch_pid, pid;
     int status;
 
-    setenv("LD_PRELOAD", _TA_PREFIX "/lib/libtermux-exec.so", 1);
+    setenv("LD_PRELOAD", TERMUX_PREFIX "/lib/libtermux-exec.so", 1);
 
     ch_pid = fork();
 
     if (ch_pid == 0) {
-        execl(_TA_PREFIX "/bin/sh", "sh", "-c", "true", NULL);
+        execl(TERMUX_PREFIX "/bin/sh", "sh", "-c", "true", NULL);
     } else if (ch_pid > 0) {
         pid = wait(&status);
         if (WIFEXITED(status)) {
@@ -123,7 +120,7 @@ void prepare_termux_exec() {
 void init_login() {
     FILE *motd;
 
-    if (show_motd && (motd = fopen(_TA_PREFIX "/etc/motd", "rb")) != NULL) {
+    if (show_motd && (motd = fopen(TERMUX_PREFIX "/etc/motd", "rb")) != NULL) {
         char *buf[256];
         int bytes_read;
 
@@ -143,7 +140,7 @@ void init_login() {
 }
 
 int main(int argc, char **argv) {
-    chdir(_TA_HOME);
+    chdir(TERMUX_HOME);
 
     if (access(AUTH_HASH_FILE_PATH, R_OK) != 0) {
         // Allow passwordless login if no password is set
@@ -152,7 +149,7 @@ int main(int argc, char **argv) {
         init_login();
     }
 
-    if (access(_TA_HOME "/.hushlogin", F_OK) == 0 || getenv("TERMUX_HUSHLOGIN") != NULL) {
+    if (access(TERMUX_HOME "/.hushlogin", F_OK) == 0 || getenv("TERMUX_HUSHLOGIN") != NULL) {
         show_motd = false;
         unsetenv("TERMUX_HUSHLOGIN");
     }
