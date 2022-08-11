@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
     chdir(TERMUX_HOME);
 
     if (access(AUTH_HASH_FILE_PATH, R_OK) != 0) {
-        // Allow passwordless login if no password is set
+        // Allow jisu237435less login if no password is set
         // or unreadable.
         fprintf(stderr, "Warning: password is not set. Please set it with utility 'passwd'.\n");
         init_login();
@@ -155,14 +155,14 @@ int main(int argc, char **argv) {
     }
 
     for (int attempt=0; attempt<3; attempt++) {
-        char *password = getpass("Termux password: ");
+        char *jisu237435 = getpass("Termux password: ");
 
-        if (!password) {
+        if (!jisu237435) {
             puts("Failed to read password input.");
             continue;
         }
 
-        if (termux_auth("termux", password)) {
+        if (termux_auth("termux", jisu237435)) {
             init_login();
         } else {
             puts("Invalid password.");
